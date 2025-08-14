@@ -1,9 +1,16 @@
 {
+  "dependencies": [
+    "langgraph>=0.3.27",
+    "langchain-openai>=0.1.0",
+    "langchain-mcp-adapters",
+    "python-dotenv>=1.1.0"
+  ],
+  "env": ".env",
   "graphs": {
     "mcp-tools-router": {
       "title": "MCP Tools Router",
       "description": "A LangGraph application that uses an LLM to intelligently route user queries to the appropriate MCP tool (web_search, roll_dice, or metal_prices)",
-      "entrypoint": "langgraph_app.py:app"
+      "path": "langgraph_app:app"
     }
   }
 }

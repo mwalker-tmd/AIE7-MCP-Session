@@ -47,6 +47,15 @@ async def decide_tool(state: AgentState) -> AgentState:
     """LLM decides which tool to use based on user input"""
     user_input = state["user_input"]
     
+    # Reset state for new runs (clear previous run data)
+    if state.get("tool_result") or state.get("final_response"):
+        state = {
+            "user_input": user_input,
+            "tool_choice": "",
+            "tool_result": "",
+            "final_response": ""
+        }
+    
     # Create a prompt for the LLM to decide which tool to use
     prompt = f"""
     Based on the user's input, determine which tool to use. Available tools:
@@ -73,6 +82,11 @@ async def call_tool(state: AgentState) -> AgentState:
     tool_choice = state["tool_choice"]
     
     try:
+        # Initialize tools if not already done
+        global mcp_tools
+        if mcp_tools is None:
+            await initialize_tools()
+        
         # Find the appropriate tool
         tool_to_use = None
         for tool in mcp_tools:
@@ -155,20 +169,5 @@ async def run_app(user_input: str):
     
     return result["final_response"]
 
-if __name__ == "__main__":
-    # Test the application
-    async def main():
-        test_queries = [
-            "What's the price of silver?",
-            "Roll 2d6",
-            "Search for latest AI news"
-        ]
-        
-        for query in test_queries:
-            print(f"\nQuery: {query}")
-            print("-" * 50)
-            result = await run_app(query)
-            print(result)
-            print("-" * 50)
-    
-    asyncio.run(main())
+# Test code removed for LangGraph Studio compatibility
+# The application will now run continuously when loaded by the dev server
